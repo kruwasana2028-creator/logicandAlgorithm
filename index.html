@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ใบกิจกรรมตรรกศาสตร์และขั้นตอนวิธีออนไลน์</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --bg-color: #f5f7fa;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        /* Student Info Form Style */
+        .student-info {
+            background: #eef2f7;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #dcdde1;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #34495e;
+        }
+
+        .student-info input, .student-info select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        /* Quiz Style */
+        .section {
+            margin-bottom: 35px;
+            padding: 20px;
+            border-left: 5px solid var(--primary-color);
+            background: #fafafa;
+            border-radius: 0 8px 8px 0;
+        }
+
+        ol li {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* Input For Answers */
+        .quiz-input {
+            padding: 6px 10px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 130px;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .quiz-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #357abd;
+        }
+
+        /* Answer States */
+        .input-correct {
+            border-color: var(--success-color) !important;
+            background-color: #e8f8f5;
+        }
+
+        .input-incorrect {
+            border-color: var(--danger-color) !important;
+            background-color: #fdebd0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>ใบกิจกรรมออนไลน์</h2>
+    <h1>เรื่อง นิพจน์ตรรกศาสตร์และขั้นตอนวิธี</h1>
+    <p class="subtitle">กรอกข้อมูลส่วนตัวให้ครบถ้วนก่อนเริ่มทำกิจกรรม</p>
+
+    <div class="student-info">
+        <div class="form-grid">
+            <div class="form-group">
+                <label>เลขประจำตัวนักเรียน (5 หลัก)</label>
+                <input type="text" id="student_id" maxlength="5" placeholder="เช่น 12345" required>
+            </div>
+            <div class="form-group">
+                <label>คำนำหน้าชื่อ</label>
+                <select id="title" required>
+                    <option value="">-- เลือก --</option>
+                    <option value="นาย">นาย</option>
+                    <option value="นางสาว">นางสาว</option>
+                </select>
+            </div>
+            <div class="form-group" style="grid-column: span 2;">
+                <label>ชื่อ-นามสกุล</label>
+                <input type="text" id="fullname" placeholder="สมชาย ใจดี" required>
+            </div>
+            <div class="form-group">
+                <label>ตอน</label>
+                <select id="section_group" required>
+                    <option value="">-- เลือก --</option>
+                    <option value="ก">ก</option>
+                    <option value="ข">ข</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>ห้อง</label>
+                <input type="text" id="room" placeholder="เช่น ม.4/1" required>
+            </div>
+            <div class="form-group">
+                <label>เลขที่</label>
+                <input type="number" id="no" min="1" placeholder="เช่น 1" required>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>ตอนที่ 1: เติมคำในช่องว่าง (ทฤษฎีและสัญลักษณ์)</h3>
+        <p style="font-style: italic; color: #666;">คำชี้แจง: นำตัวเลือกที่กำหนดให้เติมลงในช่องว่างให้ถูกต้อง (ตัวเลือก: <b>&&, ||, !, True, False, ==, !=</b>)</p>
+        <ol>
+            <li>เครื่องหมายเปรียบเทียบที่ใช้ตรวจสอบว่า "ค่าสองค่าไม่เท่ากัน" คือ 
+                <input type="text" id="q1" class="quiz-input" data-answer="!=" onchange="validateAnswer(this)">
+            </li>
+            <li>ตัวเชื่อมตรรกศาสตร์ที่ผลลัพธ์จะเป็น True แค่กรณีเดียวคือ ต้องเป็นจริงทั้งหมด คือ 
+                <input type="text" id="q2" class="quiz-input" data-answer="&&" onchange="validateAnswer(this)">
+            </li>
+            <li>ตัวเชื่อมตรรกศาสตร์ที่ทำหน้าที่ "กลับค่าความจริง" คือ 
+                <input type="text" id="q3" class="quiz-input" data-answer="!" onchange="validateAnswer(this)">
+            </li>
+            <li>นิพจน์ <code style="background:#eee; padding:2px 6px;">(10 > 5)</code> จะให้ผลลัพธ์เป็นค่าความจริงคือ 
+                <input type="text" id="q4" class="quiz-input" data-answer="True" onchange="validateAnswer(this)">
+            </li>
+            <li>นิพจน์ <code style="background:#eee; padding:2px 6px;">(3 != 3)</code> จะให้ผลลัพธ์เป็นค่าความจริงคือ 
+                <input type="text" id="q5" class="quiz-input" data-answer="False" onchange="validateAnswer(this)">
+            </li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h3>ตอนที่ 2: หาผลลัพธ์สุดท้ายของนิพจน์</h3>
+        <p style="font-style: italic; color: #666;">คำชี้แจง: จงคำนวณและเติมผลลัพธ์สุดท้ายว่าเป็น <b>True</b> หรือ <b>False</b></p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th width="10%" class="text-center">ข้อที่</th>
+                    <th width="50%">นิพจน์ตรรกศาสตร์</th>
+                    <th width="40%" class="text-center">กรอกคำตอบ (True / False)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-center">1</td>
+                    <td><code>(5 > 2) && (3 < 7)</code></td>
+                    <td class="text-center">
+                        <input type="text" id="q6" class="quiz-input" data-answer="True" onchange="validateAnswer(this)">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center">2</td>
+                    <td><code>(10 == 10) || (4 > 9)</code></td>
+                    <td class="text-center">
+                        <input type="text" id="q7" class="quiz-input" data-answer="True" onchange="validateAnswer(this)">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center">3</td>
+                    <td><code>!(8 >= 8)</code></td>
+                    <td class="text-center">
+                        <input type="text" id="q8" class="quiz-input" data-answer="False" onchange="validateAnswer(this)">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center">4</td>
+                    <td><code>(5 != 5) && (2 == 2)</code></td>
+                    <td class="text-center">
+                        <input type="text" id="q9" class="quiz-input" data-answer="False" onchange="validateAnswer(this)">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center">5</td>
+                    <td><code>(12 < 20) || (7 != 7)</code></td>
+                    <td class="text-center">
+                        <input type="text" id="q10" class="quiz-input" data-answer="True" onchange="validateAnswer(this)">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h3>ตอนที่ 3: ขั้นตอนวิธีแบบบรรยาย (แบบทางเลือก และ แบบทำซ้ำ)</h3>
+        <p style="font-style: italic; color: #666;">คำชี้แจง: วิเคราะห์ขั้นตอนวิธีแบบบรรยายต่อไปนี้ แล้วตอบว่าพิมพ์ผลลัพธ์สุดท้ายเป็นตัวเลขอะไร หรือเงื่อนไขเป็น True หรือ False</p>
+        
+        <ol>
+            <li>
+                <strong>[แบบทางเลือก]</strong> กำหนดให้คะแนนสอบ <code style="background:#eee; padding:2px 6px;">score = 75</code><br>
+                ขั้นตอนวิธี: <em>"ถ้า score มากกว่าหรือเท่ากับ 80 ให้พิมพ์คำว่า True ถ้าไม่ใช่ให้พิมพ์คำว่า False"</em><br>
+                ผลลัพธ์ที่พิมพ์ออกมาคืออะไร? 
+                <input type="text" id="q11" class="quiz-input" placeholder="True หรือ False" data-answer="False" onchange="validateAnswer(this)">
+            </li>
+
+            <li>
+                <strong>[แบบทางเลือก]</strong> กำหนดให้ <code style="background:#eee; padding:2px 6px;">age = 15</code> และ <code style="background:#eee; padding:2px 6px;">height = 150</code><br>
+                ขั้นตอนวิธี: <em>"ถ้าอายุมากกว่า 12 <strong>และ</strong> ความสูงตั้งแต่ 140 ขึ้นไป ให้พิมพ์คำว่า True ถ้าไม่ใช่ให้พิมพ์ False"</em><br>
+                ผลลัพธ์ที่พิมพ์ออกมาคืออะไร? 
+                <input type="text" id="q12" class="quiz-input" placeholder="True หรือ False" data-answer="True" onchange="validateAnswer(this)">
+            </li>
+
+            <li>
+                <strong>[แบบทำซ้ำ]</strong> กำหนดให้ <code style="background:#eee; padding:2px 6px;">count = 1</code><br>
+                ขั้นตอนวิธี: <em>"ในขณะที่ count น้อยกว่าหรือเท่ากับ 3 ให้เพิ่มค่า count ขึ้นทีละ 1 แล้ววนกลับไปตรวจสอบใหม่"</em><br>
+                เมื่อหลุดออกจากลูปทำซ้ำ ค่าของ <code style="background:#eee; padding:2px 6px;">count</code> สุดท้ายจะมีค่าเท่ากับเลขใด? 
+                <input type="text" id="q13" class="quiz-input" placeholder="กรอกตัวเลข" data-answer="4" onchange="validateAnswer(this)">
+            </li>
+
+            <li>
+                <strong>[แบบทำซ้ำ]</strong> กำหนดให้ <code style="background:#eee; padding:2px 6px;">sum = 0</code> และเริ่มต้นวนลูปโดยให้ตัวแปร <code style="background:#eee; padding:2px 6px;">i</code> มีค่าตั้งแต่ 1 ถึง 3<br>
+                ขั้นตอนวิธี: <em>"ในแต่ละรอบ ให้นำค่า i ไปบวกสะสมไว้ใน sum (รอบที่ 1 บวกลด้วย 1, รอบที่ 2 บวกด้วย 2, รอบที่ 3 บวกด้วย 3)"</em><br>
+                เมื่อสิ้นสุดการทำงาน ผลลัพธ์สุดท้ายในตัวแปร <code style="background:#eee; padding:2px 6px;">sum</code> จะมีค่าเท่ากับเลขใด? 
+                <input type="text" id="q14" class="quiz-input" placeholder="กรอกตัวเลข" data-answer="6" onchange="validateAnswer(this)">
+            </li>
+
+            <li>
+                <strong>[แบบทำซ้ำ + ทางเลือก]</strong> กำหนดให้ตรวจสอบตัวเลขตั้งแต่ 1 ถึง 5<br>
+                ขั้นตอนวิธี: <em>"วนลูปตรวจสอบทีละเลข ถ้าเลขนั้นหารด้วย 2 ลงตัว (เป็นเลขคู่) ให้สะสมนับจำนวนไว้"</em><br>
+                เมื่อตรวจสอบครบถึงเลข 5 จำนวนเลขคู่ที่นับได้ทั้งหมดมีกี่จำนวน? 
+                <input type="text" id="q15" class="quiz-input" placeholder="กรอกตัวเลข" data-answer="2" onchange="validateAnswer(this)">
+            </li>
+        </ol>
+    </div>
+
+    <div class="btn-container">
+        <button onclick="submitQuiz()">ส่งคำตอบและเช็คคะแนนรวม</button>
+    </div>
+</div>
+
+<script>
+    const totalQuestions = 15; // อัปเดตยอดข้อทั้งหมดเป็น 15 ข้อ
+
+    // 1. ระบบเช็คคำตอบผิดทันทีเมื่อกรอกเสร็จแล้วละสายตา (onchange)
+    function validateAnswer(inputElement) {
+        const userAnswer = inputElement.value.trim().toLowerCase();
+        const correctAnswer = inputElement.getAttribute('data-answer').toLowerCase();
+
+        if (userAnswer === "") {
+            inputElement.className = "quiz-input";
+            return;
+        }
+
+        if (userAnswer === correctAnswer) {
+            // ถ้าถูก เปลี่ยนกรอบเป็นสีเขียว
+            inputElement.className = "quiz-input input-correct";
+        } else {
+            // ถ้าผิด เปลี่ยนกรอบเป็นสีแดง และเด้งป๊อบอัพเตือนทันที
+            inputElement.className = "quiz-input input-incorrect";
+            alert("❌ คำตอบไม่ถูกต้อง! ลองวิเคราะห์ลำดับขั้นตอนและตรรกะใหม่อีกครั้งนะครับ");
+            inputElement.value = ""; // เคลียร์ค่าให้พิมพ์ใหม่
+            inputElement.className = "quiz-input";
+        }
+    }
+
+    // 2. ระบบเมื่อกดส่ง แจ้งคะแนนรวมและตรวจสอบข้อมูลนักเรียน
+    function submitQuiz() {
+        // ดึงค่าข้อมูลนักเรียน
+        const studentId = document.getElementById('student_id').value.trim();
+        const title = document.getElementById('title').value;
+        const fullname = document.getElementById('fullname').value.trim();
+        const sectionGroup = document.getElementById('section_group').value;
+        const room = document.getElementById('room').value.trim();
+        const no = document.getElementById('no').value.trim();
+
+        // ตรวจสอบว่ากรอกข้อมูลครบหรือยัง
+        if (!studentId || studentId.length !== 5 || !title || !fullname || !sectionGroup || !room || !no) {
+            alert("⚠️ กรุณากรอกข้อมูลนักเรียนให้ครบถ้วน และเลขประจำตัวต้องมี 5 หลักครับ!");
+            return;
+        }
+
+        let totalScore = 0;
+        let answeredCount = 0;
+
+        // คำนวณคะแนนรวมทั้งหมด 15 ข้อ
+        for (let i = 1; i <= totalQuestions; i++) {
+            const inputField = document.getElementById('q' + i);
+            const userAnswer = inputField.value.trim().toLowerCase();
+            const correctAnswer = inputField.getAttribute('data-answer').toLowerCase();
+
+            if (userAnswer !== "") {
+                answeredCount++;
+                if (userAnswer === correctAnswer) {
+                    totalScore++;
+                }
+            }
+        }
+
+        // ตรวจสอบว่าทำครบทุกข้อหรือยัง
+        if (answeredCount < totalQuestions) {
+            alert(`⚠️ กรุณาตอบคำถามให้ครบทั้ง ${totalQuestions} ข้อก่อนกดส่งครับ!`);
+            return;
+        }
+
+        // ป๊อบอัพแสดงคะแนนรวม
+        alert(`🎉 บันทึกข้อมูลสำเร็จ!\n\nผู้ส่ง: ${title}${fullname}\nเลขประจำตัว: ${studentId}\nห้อง: ${room} ตอน: ${sectionGroup} เลขที่: ${no}\n\nคะแนนรวมที่ได้: ${totalScore} / ${totalQuestions} คะแนน`);
+    }
+</script>
+
+</body>
+</html>
