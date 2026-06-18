@@ -402,7 +402,7 @@
         document.getElementById('quiz-container').innerHTML = quizHTML;
     }
 
-    // 1. ระบบเช็คคำตอบผิดทันที
+    // 1. ระบบเช็คคำตอบ (เอาป๊อปอัพแจ้งเตือนออกแล้ว)
     function validateAnswer(inputElement) {
         const userAnswer = inputElement.value.trim().toLowerCase();
         const correctAnswer = inputElement.getAttribute('data-answer').toLowerCase();
@@ -415,10 +415,13 @@
         if (userAnswer === correctAnswer) {
             inputElement.className = "quiz-input input-correct";
         } else {
-            inputElement.className = "quiz-input input-incorrect";
-            alert("❌ คำตอบไม่ถูกต้อง! ลองวิเคราะห์ลำดับขั้นตอนและตรรกะใหม่อีกครั้งนะครับ");
+            // ล้างค่าและทำเป็นกล่องสีแดงเพื่อบอกใบ้ว่าผิด โดยไม่มีป๊อปอัพขัดจังหวะ
             inputElement.value = "";
-            inputElement.className = "quiz-input";
+            inputElement.className = "quiz-input input-incorrect";
+            // คืนค่ารูปแบบปกติหลังจากผ่านไป 1 วินาที เพื่อให้ลองพิมพ์ใหม่
+            setTimeout(() => {
+                inputElement.className = "quiz-input";
+            }, 1000);
         }
     }
 
