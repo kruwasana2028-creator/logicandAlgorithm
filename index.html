@@ -211,9 +211,9 @@
 
 <script>
     const totalQuestions = 15;
+    // ⚠️ อย่าลืมนำ URL Web App จาก Google Apps Script มาใส่ตรงนี้
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzZvXyiYrZRtyKKfEepGBtFBI5aRtcerdhRLnWiyLFcvR4mulFt_-pYut7u5k2q16S45A/exec"; 
     
-    // คลังข้อสอบ 5 ชุด
     const quizDatabase = {
         1: {
             part1: [
@@ -339,7 +339,7 @@
         const set = quizDatabase[selectedSet];
         let quizHTML = '';
 
-        // ส่วนของตอนที่ 1 (แก้ไขตัวเลือกคำชี้แจงให้ครบถ้วนทุกกรณีคำตอบ)
+        // ตอนที่ 1: ตัวเลือกคำชี้แจงครอบคลุมสัญลักษณ์ทั้งหมดครบถ้วน
         quizHTML += `
         <div class="section">
             <h3>ตอนที่ 1: เติมคำในช่องว่าง (ทฤษฎีและสัญลักษณ์)</h3>
@@ -354,7 +354,7 @@
         });
         quizHTML += `</ol></div>`;
 
-        // ส่วนของตอนที่ 2
+        // ตอนที่ 2
         quizHTML += `
         <div class="section">
             <h3>ตอนที่ 2: หาผลลัพธ์สุดท้ายของนิพจน์</h3>
@@ -381,7 +381,7 @@
         });
         quizHTML += `</tbody></table></div>`;
 
-        // ส่วนของตอนที่ 3
+        // ตอนที่ 3
         quizHTML += `
         <div class="section">
             <h3>ตอนที่ 3: ขั้นตอนวิธีแบบบรรยาย (แบบทางเลือก และ แบบทำซ้ำ)</h3>
@@ -400,6 +400,7 @@
         document.getElementById('quiz-container').innerHTML = quizHTML;
     }
 
+    // ระบบเช็คคำตอบเรียลไทม์ (ไม่มีป๊อปอัพขัดจังหวะเมื่อตอบผิด)
     function validateAnswer(inputElement) {
         const userAnswer = inputElement.value.trim().toLowerCase();
         const correctAnswer = inputElement.getAttribute('data-answer').toLowerCase();
@@ -412,6 +413,7 @@
         if (userAnswer === correctAnswer) {
             inputElement.className = "quiz-input input-correct";
         } else {
+            // ตอบผิด เคลียร์ค่าว่างและแสดงแถบสีแดง 1 วินาทีเพื่อให้เด็กพิมพ์ใหม่ได้เลย
             inputElement.value = "";
             inputElement.className = "quiz-input input-incorrect";
             setTimeout(() => {
@@ -480,7 +482,6 @@
         })
         .then(() => {
             alert(`🎉 บันทึกข้อมูลลง Google Sheet สำเร็จ!\n\nผู้ส่ง: ${title}${fullname}\nคะแนนรวมที่ได้: ${totalScore} / ${totalQuestions} คะแนน`);
-            
             submitBtn.innerText = "ส่งคำตอบและเช็คคะแนนรวม";
             submitBtn.disabled = false;
         })
