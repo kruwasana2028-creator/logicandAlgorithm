@@ -43,17 +43,6 @@
             margin-bottom: 25px;
         }
 
-        .quiz-set-badge {
-            display: inline-block;
-            background-color: #7f8c8d;
-            color: #fff;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
         /* Student Info Form Style */
         .student-info {
             background: #eef2f7;
@@ -213,8 +202,6 @@
         </div>
     </div>
 
-    <center><div id="quiz-set-display" class="quiz-set-badge">กำลังสุ่มชุดข้อสอบ...</div></center>
-
     <div id="quiz-container"></div>
 
     <div class="btn-container">
@@ -226,7 +213,7 @@
     const totalQuestions = 15;
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwbbKfNp-gAmxWJL6UisKCoIG9E6hgUn8y1b7kAmEBts6Xh2Pvg9o1suVjRqXQqTYDqDg/exec"; 
     
-    // คลังข้อสอบ 5 ชุด (แต่ละชุดประกอบด้วย ตอนที่ 1, ตอนที่ 2 และ ตอนที่ 3 อย่างละ 5 ข้อ)
+    // คลังข้อสอบ 5 ชุด
     const quizDatabase = {
         1: {
             part1: [
@@ -345,13 +332,11 @@
         }
     };
 
-    let selectedSet = 1; // ตัวแปรเก็บหมายเลขชุดข้อสอบที่สุ่มได้
+    let selectedSet = 1; 
 
-    // ฟังก์ชันสำหรับทำการสุ่มโจทย์และเรนเดอร์ลงหน้าเว็บ
+    // ฟังก์ชันสำหรับสุ่มโจทย์
     function generateQuiz() {
-        // สุ่มเลขชุดข้อสอบ 1 - 5
         selectedSet = Math.floor(Math.random() * 5) + 1;
-        document.getElementById('quiz-set-display').innerText = `คลังข้อสอบชุดที่สุ่มได้: ชุดที่ ${selectedSet}`;
 
         const set = quizDatabase[selectedSet];
         let quizHTML = '';
@@ -414,11 +399,10 @@
         });
         quizHTML += `</ol></div>`;
 
-        // นำ HTML ทั้งหมดไปใส่ในกล่อง container
         document.getElementById('quiz-container').innerHTML = quizHTML;
     }
 
-    // 1. ระบบเช็คคำตอบผิดทันทีเมื่อกรอกเสร็จแล้วละสายตา (onchange)
+    // 1. ระบบเช็คคำตอบผิดทันที
     function validateAnswer(inputElement) {
         const userAnswer = inputElement.value.trim().toLowerCase();
         const correctAnswer = inputElement.getAttribute('data-answer').toLowerCase();
@@ -438,7 +422,7 @@
         }
     }
 
-    // 2. ระบบเมื่อกดส่ง แจ้งคะแนนรวมและตรวจสอบข้อมูลนักเรียน พร้อมส่งไปยัง Google Sheet
+    // 2. ระบบส่งคำตอบ
     function submitQuiz() {
         const studentId = document.getElementById('student_id').value.trim();
         const title = document.getElementById('title').value;
@@ -475,12 +459,10 @@
             return;
         }
 
-        // เปลี่ยนข้อความปุ่มระหว่างส่งข้อมูลเพื่อป้องกันการกดซ้ำ
         const submitBtn = document.querySelector('.btn-container button');
         submitBtn.innerText = "กำลังบันทึกข้อมูล...";
         submitBtn.disabled = true;
 
-        // แนบข้อมูลเพิ่มเติมว่านักเรียนทำข้อสอบ "ชุดที่เท่าไหร่" ไปที่ฐานข้อมูลด้วย เพื่อตรวจสอบย้อนหลังได้ง่าย
         const payload = {
             student_id: studentId,
             title: title,
@@ -492,7 +474,6 @@
             quiz_set: selectedSet
         };
 
-        // ใช้ Fetch API ยิงข้อมูลไปที่ Google Apps Script
         fetch(GOOGLE_SCRIPT_URL, {
             method: "POST",
             mode: "no-cors", 
@@ -501,7 +482,7 @@
             body: JSON.stringify(payload)
         })
         .then(() => {
-            alert(`🎉 บันทึกข้อมูลลง Google Sheet สำเร็จ!\n(ข้อสอบชุดที่ ${selectedSet})\n\nผู้ส่ง: ${title}${fullname}\nคะแนนรวมที่ได้: ${totalScore} / ${totalQuestions} คะแนน`);
+            alert(`🎉 บันทึกข้อมูลลง Google Sheet สำเร็จ!\n\nผู้ส่ง: ${title}${fullname}\nคะแนนรวมที่ได้: ${totalScore} / ${totalQuestions} คะแนน`);
             
             submitBtn.innerText = "ส่งคำตอบและเช็คคะแนนรวม";
             submitBtn.disabled = false;
@@ -514,7 +495,6 @@
         });
     }
 
-    // สั่งให้ระบบสุ่มโจทย์ทันทีเมื่อเว็บโหลดเสร็จ
     window.onload = generateQuiz;
 </script>
 </body>
