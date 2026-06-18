@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ใบกิจกรรมตรรกศาสตร์และขั้นตอนวิธีออนไลน์</title>
+    <title>ใบกิจกรรมที่ 2.4 ตรรกศาสตร์และขั้นตอนวิธี</title>
     <style>
         :root {
             --primary-color: #4a90e2;
@@ -324,9 +324,10 @@
 </div>
 
 <script>
-    const totalQuestions = 15; // อัปเดตยอดข้อทั้งหมดเป็น 15 ข้อ
+    const totalQuestions = 15;
+    // 🔗 วาง Web App URL ที่ได้จาก Google Apps Script ตรงนี้
+    const GOOGLE_SCRIPT_URL = "ใส่_URL_WEB_APP_ตรงนี้"; 
 
-    // 1. ระบบเช็คคำตอบผิดทันทีเมื่อกรอกเสร็จแล้วละสายตา (onchange)
     function validateAnswer(inputElement) {
         const userAnswer = inputElement.value.trim().toLowerCase();
         const correctAnswer = inputElement.getAttribute('data-answer').toLowerCase();
@@ -337,20 +338,16 @@
         }
 
         if (userAnswer === correctAnswer) {
-            // ถ้าถูก เปลี่ยนกรอบเป็นสีเขียว
             inputElement.className = "quiz-input input-correct";
         } else {
-            // ถ้าผิด เปลี่ยนกรอบเป็นสีแดง และเด้งป๊อบอัพเตือนทันที
             inputElement.className = "quiz-input input-incorrect";
             alert("❌ คำตอบไม่ถูกต้อง! ลองวิเคราะห์ลำดับขั้นตอนและตรรกะใหม่อีกครั้งนะครับ");
-            inputElement.value = ""; // เคลียร์ค่าให้พิมพ์ใหม่
+            inputElement.value = "";
             inputElement.className = "quiz-input";
         }
     }
 
-    // 2. ระบบเมื่อกดส่ง แจ้งคะแนนรวมและตรวจสอบข้อมูลนักเรียน
     function submitQuiz() {
-        // ดึงค่าข้อมูลนักเรียน
         const studentId = document.getElementById('student_id').value.trim();
         const title = document.getElementById('title').value;
         const fullname = document.getElementById('fullname').value.trim();
@@ -358,7 +355,6 @@
         const room = document.getElementById('room').value.trim();
         const no = document.getElementById('no').value.trim();
 
-        // ตรวจสอบว่ากรอกข้อมูลครบหรือยัง
         if (!studentId || studentId.length !== 5 || !title || !fullname || !sectionGroup || !room || !no) {
             alert("⚠️ กรุณากรอกข้อมูลนักเรียนให้ครบถ้วน และเลขประจำตัวต้องมี 5 หลักครับ!");
             return;
@@ -367,7 +363,6 @@
         let totalScore = 0;
         let answeredCount = 0;
 
-        // คำนวณคะแนนรวมทั้งหมด 15 ข้อ
         for (let i = 1; i <= totalQuestions; i++) {
             const inputField = document.getElementById('q' + i);
             const userAnswer = inputField.value.trim().toLowerCase();
@@ -381,16 +376,51 @@
             }
         }
 
-        // ตรวจสอบว่าทำครบทุกข้อหรือยัง
         if (answeredCount < totalQuestions) {
             alert(`⚠️ กรุณาตอบคำถามให้ครบทั้ง ${totalQuestions} ข้อก่อนกดส่งครับ!`);
             return;
         }
 
-        // ป๊อบอัพแสดงคะแนนรวม
-        alert(`🎉 บันทึกข้อมูลสำเร็จ!\n\nผู้ส่ง: ${title}${fullname}\nเลขประจำตัว: ${studentId}\nห้อง: ${room} ตอน: ${sectionGroup} เลขที่: ${no}\n\nคะแนนรวมที่ได้: ${totalScore} / ${totalQuestions} คะแนน`);
+        // --- เพิ่มระบบส่งข้อมูลไป Google Sheet ---
+        
+        // เปลี่ยนข้อความปุ่มระหว่างส่งข้อมูลเพื่อป้องกันการกดซ้ำ
+        const submitBtn = document.querySelector('button');
+        submitBtn.innerText = "กำลังบันทึกข้อมูล...";
+        submitBtn.disabled = true;
+
+        const payload = {
+            student_id: studentId,
+            title: title,
+            fullname: fullname,
+            section_group: sectionGroup,
+            room: room,
+            no: no,
+            score: totalScore
+        };
+
+        // ใช้ Fetch API ยิงข้อมูลไปที่ Google Apps Script
+        fetch(GOOGLE_SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors", // จำเป็นสำหรับการยิงข้าม Domain ของ Google Sheets
+            cache: "no-cache",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        })
+        .then(() => {
+            // แจ้งเตือนเมื่อส่งสำเร็จ
+            alert(`🎉 บันทึกข้อมูลลง Google Sheet สำเร็จ!\n\nผู้ส่ง: ${title}${fullname}\nคะแนนรวมที่ได้: ${totalScore} / ${totalQuestions} คะแนน`);
+            
+            // คืนค่าปุ่ม
+            submitBtn.innerText = "ส่งคำตอบและเช็คคะแนนรวม";
+            submitBtn.disabled = false;
+        })
+        .catch(error => {
+            alert("เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล กรุณาลองใหม่อีกครั้ง");
+            console.error("Error:", error);
+            submitBtn.innerText = "ส่งคำตอบและเช็คคะแนนรวม";
+            submitBtn.disabled = false;
+        });
     }
 </script>
-
 </body>
 </html>
