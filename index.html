@@ -145,17 +145,6 @@
         button:hover {
             background-color: #357abd;
         }
-
-        /* Answer States */
-        .input-correct {
-            border-color: var(--success-color) !important;
-            background-color: #e8f8f5;
-        }
-
-        .input-incorrect {
-            border-color: var(--danger-color) !important;
-            background-color: #fdebd0;
-        }
     </style>
 </head>
 <body>
@@ -163,7 +152,7 @@
 <div class="container">
    
     <h1>ใบกิจกรรมที่ 2.4 ตรรกศาสตร์และขั้นตอนวิธี</h1>
-    <p class="subtitle">กรอกข้อมูลส่วนตัวให้ครบถ้วนก่อนเริ่มทำกิจกรรม</p>
+    <p class="subtitle">กรอกข้อมูลส่วนตัวให้ครบถ้วนก่อนเริ่มทำกิจกรรม (คะแนนเต็ม 5 คะแนน)</p>
 
     <div class="student-info">
         <div class="form-grid">
@@ -211,8 +200,7 @@
 
 <script>
     const totalQuestions = 15;
-    // ⚠️ อย่าลืมนำ URL Web App จาก Google Apps Script มาใส่ตรงนี้
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzZvXyiYrZRtyKKfEepGBtFBI5aRtcerdhRLnWiyLFcvR4mulFt_-pYut7u5k2q16S45A/exec"; 
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwbbKfNp-gAmxWJL6UisKCoIG9E6hgUn8y1b7kAmEBts6Xh2Pvg9o1suVjRqXQqTYDqDg/exec"; 
     
     const quizDatabase = {
         1: {
@@ -339,7 +327,7 @@
         const set = quizDatabase[selectedSet];
         let quizHTML = '';
 
-        // ตอนที่ 1: ตัวเลือกคำชี้แจงครอบคลุมสัญลักษณ์ทั้งหมดครบถ้วน
+        // ตอนที่ 1
         quizHTML += `
         <div class="section">
             <h3>ตอนที่ 1: เติมคำในช่องว่าง (ทฤษฎีและสัญลักษณ์)</h3>
@@ -349,7 +337,7 @@
             const qNum = index + 1;
             quizHTML += `
                 <li>${item.q} 
-                    <input type="text" id="q${qNum}" class="quiz-input" data-answer="${item.a}" onchange="validateAnswer(this)">
+                    <input type="text" id="q${qNum}" class="quiz-input" data-answer="${item.a}">
                 </li>`;
         });
         quizHTML += `</ol></div>`;
@@ -375,7 +363,7 @@
                     <td class="text-center">${index + 1}</td>
                     <td><code>${item.exp}</code></td>
                     <td class="text-center">
-                        <input type="text" id="q${qNum}" class="quiz-input" data-answer="${item.a}" onchange="validateAnswer(this)">
+                        <input type="text" id="q${qNum}" class="quiz-input" data-answer="${item.a}">
                     </td>
                 </tr>`;
         });
@@ -392,34 +380,12 @@
             quizHTML += `
                 <li>
                     ${item.text}<br>
-                    <input type="text" id="q${qNum}" class="quiz-input" placeholder="${item.p}" data-answer="${item.a}" onchange="validateAnswer(this)">
+                    <input type="text" id="q${qNum}" class="quiz-input" placeholder="${item.p}" data-answer="${item.a}">
                 </li>`;
         });
         quizHTML += `</ol></div>`;
 
         document.getElementById('quiz-container').innerHTML = quizHTML;
-    }
-
-    // ระบบเช็คคำตอบเรียลไทม์ (ไม่มีป๊อปอัพขัดจังหวะเมื่อตอบผิด)
-    function validateAnswer(inputElement) {
-        const userAnswer = inputElement.value.trim().toLowerCase();
-        const correctAnswer = inputElement.getAttribute('data-answer').toLowerCase();
-
-        if (userAnswer === "") {
-            inputElement.className = "quiz-input";
-            return;
-        }
-
-        if (userAnswer === correctAnswer) {
-            inputElement.className = "quiz-input input-correct";
-        } else {
-            // ตอบผิด เคลียร์ค่าว่างและแสดงแถบสีแดง 1 วินาทีเพื่อให้เด็กพิมพ์ใหม่ได้เลย
-            inputElement.value = "";
-            inputElement.className = "quiz-input input-incorrect";
-            setTimeout(() => {
-                inputElement.className = "quiz-input";
-            }, 1000);
-        }
     }
 
     function submitQuiz() {
@@ -458,6 +424,9 @@
             return;
         }
 
+        // [แก้ไขคำนวณ] แปลงจากคะแนนดิบ 15 ข้อ ให้ทอนเป็นเต็ม 5 คะแนนโดยการหาร 3 ปัดเศษทศนิยม 2 ตำแหน่ง
+        const finalScore5 = Number((totalScore / 3).toFixed(2));
+
         const submitBtn = document.querySelector('.btn-container button');
         submitBtn.innerText = "กำลังบันทึกข้อมูล...";
         submitBtn.disabled = true;
@@ -469,7 +438,7 @@
             section_group: sectionGroup,
             room: room,
             no: no,
-            score: totalScore,
+            score: finalScore5, // ส่งคะแนนสุทธิ (เต็ม 5) ไปเก็บที่ชีต
             quiz_set: selectedSet
         };
 
@@ -481,7 +450,8 @@
             body: JSON.stringify(payload)
         })
         .then(() => {
-            alert(`🎉 บันทึกข้อมูลลง Google Sheet สำเร็จ!\n\nผู้ส่ง: ${title}${fullname}\nคะแนนรวมที่ได้: ${totalScore} / ${totalQuestions} คะแนน`);
+            alert(`🎉 บันทึกข้อมูลลง Google Sheet สำเร็จ!\n\nผู้ส่ง: ${title}${fullname}\nทำถูกทั้งหมด: ${totalScore} จาก 15 ข้อดิบ\nคิดเป็นคะแนนสุทธิสุทธิ์: ${finalScore5} / 5 คะแนน`);
+            
             submitBtn.innerText = "ส่งคำตอบและเช็คคะแนนรวม";
             submitBtn.disabled = false;
         })
