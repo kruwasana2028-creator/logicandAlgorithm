@@ -334,18 +334,16 @@
 
     let selectedSet = 1; 
 
-    // ฟังก์ชันสำหรับสุ่มโจทย์
     function generateQuiz() {
         selectedSet = Math.floor(Math.random() * 5) + 1;
-
         const set = quizDatabase[selectedSet];
         let quizHTML = '';
 
-        // ส่วนของตอนที่ 1
+        // ส่วนของตอนที่ 1 (แก้ไขตัวเลือกคำชี้แจงให้ครบถ้วนทุกกรณีคำตอบ)
         quizHTML += `
         <div class="section">
             <h3>ตอนที่ 1: เติมคำในช่องว่าง (ทฤษฎีและสัญลักษณ์)</h3>
-            <p style="font-style: italic; color: #666;">คำชี้แจง: นำตัวเลือกที่กำหนดให้เติมลงในช่องว่างให้ถูกต้อง (ตัวเลือก: <b>&&, ||, !, True, False, ==, !=</b>)</p>
+            <p style="font-style: italic; color: #666;">คำชี้แจง: นำตัวเลือกที่กำหนดให้เติมลงในช่องว่างให้ถูกต้อง (ตัวเลือก: <b>&&, ||, !, True, False, ==, !=, &gt;, &lt;, &gt;=, &lt;=</b>)</p>
             <ol>`;
         set.part1.forEach((item, index) => {
             const qNum = index + 1;
@@ -402,7 +400,6 @@
         document.getElementById('quiz-container').innerHTML = quizHTML;
     }
 
-    // 1. ระบบเช็คคำตอบ (เอาป๊อปอัพแจ้งเตือนออกแล้ว)
     function validateAnswer(inputElement) {
         const userAnswer = inputElement.value.trim().toLowerCase();
         const correctAnswer = inputElement.getAttribute('data-answer').toLowerCase();
@@ -415,17 +412,14 @@
         if (userAnswer === correctAnswer) {
             inputElement.className = "quiz-input input-correct";
         } else {
-            // ล้างค่าและทำเป็นกล่องสีแดงเพื่อบอกใบ้ว่าผิด โดยไม่มีป๊อปอัพขัดจังหวะ
             inputElement.value = "";
             inputElement.className = "quiz-input input-incorrect";
-            // คืนค่ารูปแบบปกติหลังจากผ่านไป 1 วินาที เพื่อให้ลองพิมพ์ใหม่
             setTimeout(() => {
                 inputElement.className = "quiz-input";
             }, 1000);
         }
     }
 
-    // 2. ระบบส่งคำตอบ
     function submitQuiz() {
         const studentId = document.getElementById('student_id').value.trim();
         const title = document.getElementById('title').value;
